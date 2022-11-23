@@ -20,6 +20,7 @@ public class NotesTakerActivity extends AppCompatActivity {
     EditText editText_title, editText_notes;
     ImageView imageView_save;
     Notes notes;
+    boolean isOldNote = false;
 
 
     @Override
@@ -28,28 +29,43 @@ public class NotesTakerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notes_taker);
 
         imageView_save = findViewById(R.id.imageView_save);
+        editText_title = findViewById(R.id.editText_title);
+        editText_notes = findViewById(R.id.editText_notes);
 
-        imageView_save.setOnClickListener(v -> {
-            String title = editText_title.getText().toString();
-            String description = editText_notes.getText().toString();
+        notes = new Notes();
+        try {
+            notes = (Notes) getIntent().getSerializableExtra("old_note");
+            editText_title.setText(notes.getTitle());
+            editText_notes.setText(notes.getNotes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            if (description.isEmpty()){
-                Toast.makeText(this, "Proszę wpisać treść notatki", Toast.LENGTH_SHORT).show();
-                return;
+        imageView_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = editText_title.getText().toString();
+                String description = editText_notes.getText().toString();
+
+                if (description.isEmpty()) {
+                    Toast.makeText(NotesTakerActivity.this, "Proszę wpisać treść notatki", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                SimpleDateFormat dateFormat = new SimpleDateFormat("EEE,d MMM yyyy HH:mm a");
+                Date date = new Date();
+
+                if (!isOldNote) {
+                    notes = new Notes();
+                }
+                notes.setTitle(title);
+                notes.setNotes(description);
+                notes.setDate(dateFormat.format(date));
+
+                Intent intent = new Intent();
+                intent.putExtra("note", notes);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE,d MMM yyyy HH:mm a");
-            Date date = new Date();
-
-            notes = new Notes();
-
-            notes.setTitle(title);
-            notes.setNotes(description);
-            notes.setDate(dateFormat.format(date));
-
-            Intent intent = new Intent();
-            intent.putExtra("note", notes);
-            setResult(Activity.RESULT_OK, intent);
-            finish();
         });
     }
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NotesViewHolder> {
+public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
 
     Context context;
     List<Notes> list;
@@ -34,7 +34,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
     @NonNull
     @Override
     public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NotesViewHolder(LayoutInflater.from(context).inflate(R.layout.notes_list,parent));
+        return new NotesViewHolder(LayoutInflater.from(context).inflate(R.layout.notes_list, parent));
     }
 
     @Override
@@ -44,30 +44,38 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.textView_title.setSelected(true);
 
         holder.textView_notes.setText(list.get(position).getNotes());
+
         holder.textView_date.setText(list.get(position).getDate());
         holder.textView_date.setSelected(true);
 
-        if (list.get(position).isPinned()){
+        if (list.get(position).isPinned()) {
             holder.imageView_pin.setImageResource(R.drawable.ic_pin);
         } else {
             holder.imageView_pin.setImageResource(0);
         }
-
         int color_code = getRandomColor();
-        holder.notes_container.setCardBackgroundColor(holder.itemView.getResources().getColor(color_code,null));
-        holder.notes_container.setOnClickListener(v -> {
-            listener.onClick(list.get(holder.getAdapterPosition()));
+
+        holder.notes_container.setCardBackgroundColor(holder.itemView.getResources().getColor(color_code, null));
+
+        holder.notes_container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(list.get(holder.getAdapterPosition()));
+            }
         });
 
-        holder.notes_container.setOnLongClickListener(v -> {
-            listener.onLongClick(list.get(holder.getAdapterPosition()),holder.notes_container);
-            return true;
+        holder.notes_container.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.onLongClick(list.get(holder.getAdapterPosition()), holder.notes_container);
+                return true;
+            }
         });
-
     }
 
-    private int getRandomColor(){
-        List <Integer> colorCode = new ArrayList<>();
+    private int getRandomColor() {
+        List<Integer> colorCode = new ArrayList<>();
+
         colorCode.add(R.color.color1);
         colorCode.add(R.color.color2);
         colorCode.add(R.color.color3);
@@ -85,7 +93,14 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         return list.size();
     }
 
-    class NotesViewHolder extends RecyclerView.ViewHolder {
+    public void  filterList(List<Notes> filteredList){
+        list = filteredList;
+        notifyDataSetChanged();
+    }
+}
+
+class NotesViewHolder extends RecyclerView.ViewHolder {
+
     CardView notes_container;
     TextView textView_title, textView_notes, textView_date;
     ImageView imageView_pin;
@@ -98,7 +113,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         textView_notes = itemView.findViewById(R.id.textView_notes);
         textView_date = itemView.findViewById(R.id.textView_date);
         imageView_pin = itemView.findViewById(R.id.imageView_pin);
-
-    }
     }
 }
+
