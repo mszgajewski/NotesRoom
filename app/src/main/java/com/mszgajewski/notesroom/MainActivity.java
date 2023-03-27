@@ -6,57 +6,42 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import com.mszgajewski.notesroom.Adapters.NotesListAdapter;
 import com.mszgajewski.notesroom.Database.RoomDB;
 import com.mszgajewski.notesroom.Models.Notes;
-
+import com.mszgajewski.notesroom.databinding.ActivityMainBinding;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
-    RecyclerView recyclerView;
+    ActivityMainBinding binding;
     NotesListAdapter notesListAdapter;
     List<Notes> notes = new ArrayList<>();
     RoomDB database;
-    FloatingActionButton fab_add;
-    SearchView searchView_home;
     Notes selectedNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        recyclerView = findViewById(R.id.recycler_home);
-        fab_add = findViewById(R.id.fab_add);
-        searchView_home = findViewById(R.id.searchView_home);
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         database = RoomDB.getInstance(this);
         notes = database.mainDAO().getAll();
         updateRecycler(notes);
 
-        fab_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NotesTakerActivity.class);
-                startActivityForResult(intent,101);
-            }
+        binding.fabAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, NotesTakerActivity.class);
+            startActivityForResult(intent,101);
         });
 
-        searchView_home.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.searchViewHome.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -105,10 +90,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     private void updateRecycler(List<Notes> notes) {
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
+        binding.recyclerHome.setHasFixedSize(true);
+        binding.recyclerHome.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         notesListAdapter = new NotesListAdapter(MainActivity.this, notes,notesClickListener);
-        recyclerView.setAdapter(notesListAdapter);
+        binding.recyclerHome.setAdapter(notesListAdapter);
     }
 
     private final NotesClickListener notesClickListener = new NotesClickListener() {
