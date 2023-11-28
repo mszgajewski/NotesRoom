@@ -19,11 +19,13 @@ public class NotesTakerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         binding = ActivityNotesTakerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         notes = new Notes();
+
         try {
             notes = (Notes) getIntent().getSerializableExtra("old_note");
             binding.editTextTitle.setText(notes.getTitle());
@@ -42,9 +44,9 @@ public class NotesTakerActivity extends AppCompatActivity {
                     Toast.makeText(NotesTakerActivity.this, "Proszę wpisać treść notatki", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("EEE,d MMM yyyy HH:mm a");
                 Date date = new Date();
-
                 if (!isOldNote) {
                     notes = new Notes();
                 }

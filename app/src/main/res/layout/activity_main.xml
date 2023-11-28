@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="16dp"
         android:background="@color/teal_200"
-        app:queryHint="Przeszukaj notatki"
+        app:queryHint="Szukaj"
         app:iconifiedByDefault="false"/>
 
     <androidx.recyclerview.widget.RecyclerView

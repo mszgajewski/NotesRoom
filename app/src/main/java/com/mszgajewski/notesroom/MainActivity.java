@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 notesListAdapter.notifyDataSetChanged();
                 Toast.makeText(this, "Usunieto!", Toast.LENGTH_SHORT).show();
                 return true;
-
             default:
                 return false;
         }
